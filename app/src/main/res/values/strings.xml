@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">WallpaperTumblr</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="title1vipager">Home</string>
+    <string name="title2vipager">Categories</string>
+    <string name="title3vipager">Favorites</string>
+    <string name="closedrawer">close</string>
+    <string name="opendrawer">open</string>
+
+</resources>
