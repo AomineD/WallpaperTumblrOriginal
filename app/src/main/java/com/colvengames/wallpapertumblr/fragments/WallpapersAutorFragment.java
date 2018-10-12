@@ -82,7 +82,7 @@ name = bondol.getString(Constant.key_name_autor);
 
         List_wallpaper = view.findViewById(R.id.rec);
 
-        WallpaperAdapter adapter = new WallpaperAdapter(getContext(), tumblrItemArrayList);
+        WallpaperAdapter adapter = new WallpaperAdapter(getContext(), tumblrItemArrayList, getActivity());
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 

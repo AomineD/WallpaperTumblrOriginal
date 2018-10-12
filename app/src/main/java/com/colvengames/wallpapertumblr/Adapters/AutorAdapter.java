@@ -7,6 +7,7 @@ import  android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,10 +75,12 @@ holder.photo.setImageDrawable(mContext.getResources().getDrawable(Constant.Drawa
                 WallpapersAutorFragment fragment = new WallpapersAutorFragment();
                 Bundle bondol = new Bundle();
                 bondol.putString(Constant.key_bundle1, autors.get(position).getNameAutor());
+               // Log.e("MAIN", "onClick: "+position);
                 bondol.putString(Constant.key_name_autor, Constant.nombre_usuarios[position]);
 
 fragment.setArguments(bondol);
 
+transaction.setCustomAnimations(R.anim.zoomin, R.anim.zoomout);
                 transaction.replace(R.id.fragm, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();

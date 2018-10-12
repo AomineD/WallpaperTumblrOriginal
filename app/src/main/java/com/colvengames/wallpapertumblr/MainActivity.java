@@ -1,16 +1,23 @@
 package com.colvengames.wallpapertumblr;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import com.colvengames.wallpapertumblr.config.PagerAdapter;
+import com.orm.SugarContext;
+import com.orm.util.SugarConfig;
+
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.transition.ChangeImageTransform;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -22,8 +29,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
    private android.support.v7.widget.Toolbar toolbar;
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SugarContext.terminate();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SetupTransitions();
+        SugarContext.init(this);
         setContentView(R.layout.activity_main);
 
         tabLayout = findViewById(R.id.nav_Tab);
@@ -69,6 +84,8 @@ ChangeTitle(tab.getPosition());
     private void SetupActionBar() {
 
 
+
+
         DrawerLayout drawerLayout = findViewById(R.id.drawer);
 
 
@@ -84,6 +101,14 @@ navigationView.setNavigationItemSelectedListener(this);
 
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    private void SetupTransitions(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            getWindow().setExitTransition(new ChangeImageTransform());
+
+        }
     }
 
 

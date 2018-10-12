@@ -17,4 +17,11 @@
         <item name="color">@color/itemnav</item>
     </style>
 
+    <style name="WallpaperTransition" parent="Theme.AppCompat.Light.NoActionBar"
+        >
+        <item name="android:windowEnterTransition">@transition/settransition</item>
+<item name="android:windowActivityTransitions">true</item>
+
+    </style>
+
 </resources>
