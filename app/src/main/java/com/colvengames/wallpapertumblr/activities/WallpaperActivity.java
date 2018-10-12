@@ -98,7 +98,7 @@ return true;
 
         switch (item.getItemId()){
             case R.id.download:
-
+DownloadFileMethod();
                 break;
             case R.id.favorite:
 if(favorites){
@@ -121,6 +121,10 @@ item.setIcon(R.drawable.favorite_btn);
 
 
         return true;
+    }
+
+    private void DownloadFileMethod() {
+
     }
 
     private void SetupToolbar() {
