@@ -1,34 +1,48 @@
 package com.colvengames.wallpapertumblr.fragments;
 
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.colvengames.wallpapertumblr.Adapters.OnScrollChangeAdapter;
 import com.colvengames.wallpapertumblr.Adapters.WallpaperAdapter;
 import com.colvengames.wallpapertumblr.R;
+import com.colvengames.wallpapertumblr.api.OnLoadMore;
 import com.colvengames.wallpapertumblr.api.ResponseApi;
 import com.colvengames.wallpapertumblr.api.TumblrApi;
 import com.colvengames.wallpapertumblr.config.Constant;
 import com.colvengames.wallpapertumblr.models.TumblrItem;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Home extends Fragment {
+public class Home extends Fragment implements OnLoadMore {
 
 
     private ArrayList<TumblrItem> tumblrItemArrayList = new ArrayList<>();
     private RecyclerView List_wallpaper;
+    private GifImageView loading;
+    private TextView message;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
+    private int id = 0;
+    private int last_id = 3;
 
     public Home() {
         // Required empty public constructor
@@ -38,25 +52,10 @@ public class Home extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ResponseApi responseApi = new ResponseApi() {
-            @Override
-            public void Correct(ArrayList<TumblrItem> response) {
-               tumblrItemArrayList.addAll(response);
-               List_wallpaper.getAdapter().notifyDataSetChanged();
-            }
-
-            @Override
-            public void Incorrect(String errno) {
-
-            }
-        };
+   GetData();
 
 
-        String main_url = Constant.base_url+Constant.usuariosTumblr[1]+Constant.base_url2+Constant.limite_por_pagina+Constant.base_url3;
 
-        TumblrApi api = new TumblrApi(main_url, getContext(), responseApi);
-
-        api.RunApi();
 
 
     }
@@ -72,12 +71,78 @@ public class Home extends Fragment {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
 
+        loading = view.findViewById(R.id.gifloading);
+
+        message = view.findViewById(R.id.errortext);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipe);
+
+
+
+
 List_wallpaper.setLayoutManager(gridLayoutManager);
 List_wallpaper.setAdapter(adapter);
 
-
+        SetupSwipe();
 
         return view;
     }
 
+    private void SetupSwipe() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                tumblrItemArrayList.clear();
+                List_wallpaper.getAdapter().notifyDataSetChanged();
+                GetData();
+            }
+        });
+
+OnScrollChangeAdapter changeAdapter = new OnScrollChangeAdapter(List_wallpaper, this);
+
+List_wallpaper.setOnScrollListener(changeAdapter);
+
+    }
+
+    private void GetData(){
+
+        ResponseApi responseApi = new ResponseApi() {
+            @Override
+            public void Correct(ArrayList<TumblrItem> response) {
+                tumblrItemArrayList.addAll(response);
+                List_wallpaper.getAdapter().notifyDataSetChanged();
+                loading.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+
+                //Log.e("MAIN", "Correct: "+response.size());
+            }
+
+            @Override
+            public void Incorrect(String errno) {
+                loading.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+                message.setVisibility(View.VISIBLE);
+            }
+        };
+
+
+     //   Log.e("MAIN", "GetData: "+Constant.usuariosTumblr[id]);
+            String main_url = Constant.base_url + Constant.usuariosTumblr[id] + Constant.base_url2 + Constant.limite_por_pagina + Constant.base_url3;
+
+            TumblrApi api = new TumblrApi(main_url, getContext(), responseApi);
+
+            api.RunApi();
+
+    }
+
+    @Override
+    public void LoadMore() {
+        id++;
+
+        if(id < Constant.usuariosTumblr.length && last_id != id) {
+            swipeRefreshLayout.setRefreshing(true);
+            last_id = id;
+            GetData();
+        }
+    }
 }

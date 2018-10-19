@@ -12,15 +12,15 @@ public class Constant {
     // ============================================= Aqui van los nombre de usuario separados por coma =========================================== //
     // =========================================================================================================================================== //
     public static String[] usuariosTumblr = new String[]{
-            "pepesegarra57",
             "artbyandy",
-            "papersways",
+            "pepesegarra57",
+            "papersways"
     };
 
 
     public static String[] nombre_usuarios = new String[]{
-            "Pepe Segarra",
             "Art Andy",
+            "Pepe Segarra",
             "Papers Ways"
     };
 
@@ -45,7 +45,10 @@ public class Constant {
     public static final String key_bundle1 = "akkeda";
     public static final String key_name_autor ="kkautor";
 
-public static final int limite_por_pagina = 20;
+
+
+
+public static final int limite_por_pagina = 25;
 
 
 }

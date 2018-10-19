@@ -11,4 +11,27 @@
     <string name="closedrawer">close</string>
     <string name="opendrawer">open</string>
 
+
+    <string name="tuto1">Welcome to WallpaperTumblr, enjoy the best wallpaper in your device for free!</string>
+    <string name="tuto2">Select any wallpaper and review it</string>
+    <string name="tuto3">Add to favorites to save it and use later</string>
+    <string name="tuto4">Download any wallpaper and use for free</string>
+    <string name="want_use">Do you want use this wallpaper?</string>
+    <string name="use">USE</string>
+    <string name="don_t_use">Don\'t use</string>
+    <string name="like_wallpaper">Like Wallpaper</string>
+    <string name="like_lock">Like locker</string>
+    <string name="share_it">Share it!</string>
+    <string name="no_support">Your device don\'t support this feature</string>
+    <string name="title_chooser_share">Share via...</string>
+    <string name="look_share">Look more images in </string>
+
+    <string name="linkapp">http://bit.ly/wallpaperTumblr</string>
+    <string name="touch_to_continue">TOUCH TO CONTINUE</string>
+    <string name="wallpaper_are_ready">Your new wallpaper are Ready</string>
+    <string name="lockscreen_are_ready">Your new Lock screen are Ready</string>
+    <string name="select_an_option">SELECT AN OPTION</string>
+    <string name="sent_whatsapp">Your image profile was selected!</string>
+    <string name="like_ws_profile">Like Whatsapp Profile</string>
+
 </resources>

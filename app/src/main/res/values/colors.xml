@@ -6,7 +6,12 @@
 
     <color name="itemnav">#ffffff</color>
 
-    <color name="colorDark">#000000</color>
+    <color name="colorDark">#080339</color>
     <color name="white">#ffffff</color>
     <color name="btn_set">#444a54</color>
+    <color name="colorsemidark">#c4000000</color>
+
+    <color name="black">#000000</color>
+
+    <color name="yellow">#ffeb0f</color>
 </resources>

@@ -5,12 +5,14 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.colvengames.wallpapertumblr.Adapters.WallpaperAdapter;
 import com.colvengames.wallpapertumblr.R;
@@ -20,6 +22,8 @@ import com.colvengames.wallpapertumblr.models.TumblrItem;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class FavoritesFragment extends Fragment {
 
     ArrayList<FavoritesItem> favoritesItemArrayList = new ArrayList<>();
@@ -27,6 +31,10 @@ public class FavoritesFragment extends Fragment {
     ArrayList<TumblrItem> itemFav = new ArrayList<>();
 
     private RecyclerView list_recycler;
+
+    private GifImageView loading;
+    private TextView message;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     public FavoritesFragment() {
@@ -39,24 +47,7 @@ public class FavoritesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-try {
-    favoritesItemArrayList = (ArrayList<FavoritesItem>) FavoritesItem.listAll(FavoritesItem.class);
-
-
-    Log.e("MAIN", "onCreate: SIZE = " + favoritesItemArrayList.size());
-
-    for (int i = 0; i < favoritesItemArrayList.size(); i++) {
-        TumblrItem item = new TumblrItem();
-        item.setUrl_image(favoritesItemArrayList.get(i).getUrl());
-        item.setName(favoritesItemArrayList.get(i).getName());
-
-        itemFav.add(item);
-
-
-    }
-}catch (SQLiteException e){
-    Log.e("MAIN", "onCreate: "+e.getMessage());
-}
+GetData();
 
     }
 
@@ -76,7 +67,55 @@ try {
         list_recycler.setLayoutManager(gridLayoutManager);
         list_recycler.setAdapter(adapter);
 
+        loading = view.findViewById(R.id.gifloading);
+
+        message = view.findViewById(R.id.errortext);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipe);
+        loading.setVisibility(View.GONE);
+
+        SetupSwipe();
+
         return view;
+    }
+
+
+    private void SetupSwipe() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                favoritesItemArrayList.clear();
+                list_recycler.getAdapter().notifyDataSetChanged();
+                GetData();
+            }
+        });
+    }
+
+
+    private void GetData(){
+        try {
+            favoritesItemArrayList = (ArrayList<FavoritesItem>) FavoritesItem.listAll(FavoritesItem.class);
+
+
+            //Log.e("MAIN", "onCreate: SIZE = " + favoritesItemArrayList.size());
+
+            for (int i = 0; i < favoritesItemArrayList.size(); i++) {
+                TumblrItem item = new TumblrItem();
+                item.setUrl_image(favoritesItemArrayList.get(i).getUrl());
+                item.setName(favoritesItemArrayList.get(i).getName());
+
+                itemFav.add(item);
+
+
+            }
+if(swipeRefreshLayout != null)
+            swipeRefreshLayout.setRefreshing(false);
+
+        }catch (SQLiteException e){
+            Log.e("MAIN", "onCreate: "+e.getMessage());
+            if(loading != null)
+            loading.setVisibility(View.VISIBLE);
+        }
     }
 
 

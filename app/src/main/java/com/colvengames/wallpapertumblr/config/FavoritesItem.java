@@ -1,7 +1,9 @@
 package com.colvengames.wallpapertumblr.config;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Table;
 
+@Table
 public class FavoritesItem extends SugarRecord {
     public String getUrl() {
         return url;
