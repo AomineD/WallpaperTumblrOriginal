@@ -44,6 +44,7 @@ public class Home extends Fragment implements OnLoadMore {
     private int id = 0;
     private int last_id = 3;
 
+    private int aki = 0;
     public Home() {
         // Required empty public constructor
     }
@@ -84,6 +85,7 @@ List_wallpaper.setLayoutManager(gridLayoutManager);
 List_wallpaper.setAdapter(adapter);
 
         SetupSwipe();
+        aki = Constant.NATIVE_FRECUENCY;
 
         return view;
     }
@@ -94,7 +96,7 @@ List_wallpaper.setAdapter(adapter);
             public void onRefresh() {
                 tumblrItemArrayList.clear();
                 List_wallpaper.getAdapter().notifyDataSetChanged();
-                GetData();
+                GetDataFromZero();
             }
         });
 
@@ -110,11 +112,29 @@ List_wallpaper.setOnScrollListener(changeAdapter);
             @Override
             public void Correct(ArrayList<TumblrItem> response) {
                 tumblrItemArrayList.addAll(response);
+
+
+
+                for(int i=0; i < tumblrItemArrayList.size(); i++){
+                    if(aki - 1 == i && !tumblrItemArrayList.get(i).isAD()){
+
+                        TumblrItem itemAd = new TumblrItem();
+
+                        itemAd.setAD(true);
+
+
+                        tumblrItemArrayList.add(i, itemAd);
+
+                        aki += Constant.NATIVE_FRECUENCY;
+                    }
+                }
+
+
                 List_wallpaper.getAdapter().notifyDataSetChanged();
                 loading.setVisibility(View.GONE);
                 swipeRefreshLayout.setRefreshing(false);
 
-                //Log.e("MAIN", "Correct: "+response.size());
+                Log.e("MAIN", "Correct: "+response.size());
             }
 
             @Override
@@ -133,6 +153,56 @@ List_wallpaper.setOnScrollListener(changeAdapter);
 
             api.RunApi();
 
+    }
+
+    private void GetDataFromZero(){
+aki = Constant.NATIVE_FRECUENCY;
+
+
+        ResponseApi responseApi = new ResponseApi() {
+            @Override
+            public void Correct(ArrayList<TumblrItem> response) {
+                tumblrItemArrayList.addAll(response);
+
+
+
+                for(int i=0; i < tumblrItemArrayList.size(); i++){
+                    if(aki - 1 == i && !tumblrItemArrayList.get(i).isAD()){
+
+                        TumblrItem itemAd = new TumblrItem();
+
+                        itemAd.setAD(true);
+
+
+                        tumblrItemArrayList.add(i, itemAd);
+
+                        aki += Constant.NATIVE_FRECUENCY;
+                    }
+                }
+
+
+                List_wallpaper.getAdapter().notifyDataSetChanged();
+                loading.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+
+                Log.e("MAIN", "Correct: "+response.size());
+            }
+
+            @Override
+            public void Incorrect(String errno) {
+                loading.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
+                message.setVisibility(View.VISIBLE);
+            }
+        };
+
+
+        //   Log.e("MAIN", "GetData: "+Constant.usuariosTumblr[id]);
+        String main_url = Constant.base_url + Constant.usuariosTumblr[0] + Constant.base_url2 + Constant.limite_por_pagina + Constant.base_url3;
+
+        TumblrApi api = new TumblrApi(main_url, getContext(), responseApi);
+
+        api.RunApi();
     }
 
     @Override

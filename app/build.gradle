@@ -34,6 +34,10 @@ dependencies {
     implementation 'com.github.satyan:sugar:1.5'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.15'
 
+
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.facebook.android:audience-network-sdk:5.+'
     implementation 'com.github.yalantis:ucrop:2.2.2'
+    implementation 'com.google.android.gms:play-services-ads:17.0.0'
 
 }

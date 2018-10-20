@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.colvengames.wallpapertumblr.MainActivity;
 import com.colvengames.wallpapertumblr.R;
 import com.colvengames.wallpapertumblr.activities.WallpaperActivity;
 import com.colvengames.wallpapertumblr.api.DownloadArchiveResponse;
@@ -339,6 +340,10 @@ activado = true;
     }
 
     private void isWallpaper(){
+       if(MainActivity.main_interstitial.isLoaded()){
+           MainActivity.main_interstitial.show();
+       }
+
        try {
            SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
 
@@ -355,6 +360,9 @@ activado = true;
     }
 
     private void ProfileWhatsapp(){
+        if(MainActivity.main_interstitial.isLoaded()){
+            MainActivity.main_interstitial.show();
+        }
         try {
             SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
 

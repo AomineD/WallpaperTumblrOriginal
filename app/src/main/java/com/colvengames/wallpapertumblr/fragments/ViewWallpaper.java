@@ -9,11 +9,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.colvengames.wallpapertumblr.MainActivity;
 import com.colvengames.wallpapertumblr.R;
 import com.colvengames.wallpapertumblr.activities.WallpaperActivity;
+import com.facebook.ads.AdIconView;
+import com.facebook.ads.MediaView;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +30,7 @@ public class ViewWallpaper extends Fragment {
 
 private Uri urr;
 public ImageView image;
+private boolean isAD;
 
     public Uri getUrr() {
         return urr;
@@ -39,6 +48,7 @@ public ImageView image;
 
         if(bondol != null){
             urr = Uri.parse(bondol.getString(WallpaperActivity.key_wall));
+            isAD = bondol.getBoolean(WallpaperActivity.key_type);
         }
 
     }
@@ -52,8 +62,40 @@ public ImageView image;
 
         image = view.findViewById(R.id.wallpaper);
 
-        Picasso.get().load(urr).fit().into(image);
+if(urr != null && !isAD) {
+    Picasso.get().load(urr).fit().into(image);
+}else if(isAD){
+    RelativeLayout relativeLayout_ad = view.findViewById(R.id.ad_container);
+    AdIconView adIconView = view.findViewById(R.id.ad_icon_view);
+    MediaView mediaView = view.findViewById(R.id.media_fb_ad);
+    TextView title_ad = view.findViewById(R.id.title_ad);
+    Button install_button = view.findViewById(R.id.button_install);
 
+    relativeLayout_ad.setVisibility(View.VISIBLE);
+
+    ArrayList<View> Clickables = new ArrayList<>();
+
+    if(MainActivity.nativeAds.isAdLoaded()){
+
+        title_ad.setText(MainActivity.nativeAds.getAdHeadline());
+
+        install_button.setText(MainActivity.nativeAds.getAdCallToAction());
+
+        Clickables.add(mediaView);
+        Clickables.add(adIconView);
+        Clickables.add(install_button);
+        Clickables.add(title_ad);
+
+        MainActivity.nativeAds.registerViewForInteraction(relativeLayout_ad, mediaView, adIconView, Clickables);
+
+    }
+
+
+
+
+
+
+}
         //Log.e("MAIN", "FRAGMENTO: QUESESTE = "+urr.toString());
 
         return view;

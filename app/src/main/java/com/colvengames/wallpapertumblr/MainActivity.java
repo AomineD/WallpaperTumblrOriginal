@@ -1,18 +1,34 @@
 package com.colvengames.wallpapertumblr;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+
+import com.colvengames.wallpapertumblr.config.Constant;
 import com.colvengames.wallpapertumblr.config.PagerAdapter;
+import com.facebook.ads.Ad;
+import com.facebook.ads.AdError;
+import com.facebook.ads.AdListener;
+import com.facebook.ads.AdSettings;
+import com.facebook.ads.AdSize;
+import com.facebook.ads.AdView;
+import com.facebook.ads.NativeAd;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.orm.SugarContext;
 import com.orm.util.SugarConfig;
 
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.ChangeImageTransform;
@@ -21,6 +37,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toolbar;
@@ -30,27 +47,33 @@ import pl.droidsonroids.gif.GifImageView;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
-   private TabLayout tabLayout;
-   private ViewPager viewPager;
-   private NavigationView navigationView;
-   private android.support.v7.widget.Toolbar toolbar;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private NavigationView navigationView;
+    private android.support.v7.widget.Toolbar toolbar;
 
-   // ============================== GIF VIEWS ============================== //
-   public static final String key_tt = "tytorial";
-   private GifImageView gif_img;
-   private TextView content;
-   private GifImageView tuto_1;
-   private GifImageView tuto_2;
-   private GifImageView fireworks_gif;
+    // ============================== GIF VIEWS ============================== //
+    public static final String key_tt = "tytorial";
+    private GifImageView gif_img;
+    private TextView content;
+    private GifImageView tuto_1;
+    private GifImageView tuto_2;
+    private GifImageView fireworks_gif;
 
-   // ======================================================================= //
+    public static final String keyToBoleaan = "boleaan";
+    public static final String keytoint = "keylkey";
+
+    // ======================================================================= //
 
 
-   private RelativeLayout relativeLayoutTutorial;
+    private RelativeLayout relativeLayoutTutorial;
+    private LinearLayout layout_banner;
     private int valuest = 1;
     private SharedPreferences preferences;
     private MediaPlayer success;
     private MediaPlayer congrats;
+    public static NativeAd nativeAds;
+    public static InterstitialAd main_interstitial;
 
     @Override
     protected void onDestroy() {
@@ -64,9 +87,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SetupTransitions();
         SugarContext.init(this);
         setContentView(R.layout.activity_main);
+        MobileAds.initialize(this);
 
         success = MediaPlayer.create(this, R.raw.success);
         congrats = MediaPlayer.create(this, R.raw.complete);
+        layout_banner = findViewById(R.id.banner_container);
 
         relativeLayoutTutorial = findViewById(R.id.tutorialrelative);
         tuto_1 = findViewById(R.id.giftuto_1);
@@ -78,19 +103,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         preferences = getPreferences(MODE_PRIVATE);
 
-        if(preferences.getInt(key_tt, 0) == 0){
+        if (preferences.getInt(key_tt, 0) == 0) {
             Showtutorial();
         }
 
 
-
-
         tabLayout = findViewById(R.id.nav_Tab);
         viewPager = findViewById(R.id.vipager);
-toolbar = findViewById(R.id.toolbarMain);
-SetupActionBar();
+        toolbar = findViewById(R.id.toolbarMain);
+        SetupActionBar();
 
-ChangeTitle(0);
+        ChangeTitle(0);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title1vipager));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title2vipager));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title3vipager));
@@ -117,10 +140,94 @@ ChangeTitle(0);
             }
         });
 
-     PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+        PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
 
-     viewPager.setAdapter(pagerAdapter);
+        viewPager.setAdapter(pagerAdapter);
 
+
+        ShowDialog();
+
+
+        AdSettings.setDebugBuild(true);
+        SetupAds();
+    }
+
+    private void SetupAds() {
+nativeAds = new NativeAd(this, getString(R.string.native_ad_fb));
+
+nativeAds.loadAd();
+
+if(Constant.TYPE_ADS == 0){
+    AdView banner_facebook = new AdView(this, getString(R.string.Banner_facebook), AdSize.BANNER_HEIGHT_50);
+
+    banner_facebook.loadAd();
+
+    banner_facebook.setAdListener(new AdListener() {
+        @Override
+        public void onError(Ad ad, AdError adError) {
+            Log.e("MAIN", "onErrorBanner: "+adError.getErrorMessage());
+        }
+
+        @Override
+        public void onAdLoaded(Ad ad) {
+            Log.e("MAIN", "onAdLoaded: COMPLETE" );
+        }
+
+        @Override
+        public void onAdClicked(Ad ad) {
+
+        }
+
+        @Override
+        public void onLoggingImpression(Ad ad) {
+
+        }
+    });
+
+    layout_banner.addView(banner_facebook);
+
+}else if(Constant.TYPE_ADS == 1){
+    com.google.android.gms.ads.AdView banner_google = new com.google.android.gms.ads.AdView(this);
+
+    banner_google.setAdUnitId(getString(R.string.banner_google));
+    banner_google.setAdListener(new com.google.android.gms.ads.AdListener(){
+        @Override
+        public void onAdFailedToLoad(int i) {
+            super.onAdFailedToLoad(i);
+            Log.e("MAIN", "onAdFailedToLoad: " +i);
+        }
+
+        @Override
+        public void onAdLoaded() {
+            super.onAdLoaded();
+            Log.e("MAIN", "onAdLoaded: COMPLETE");
+        }
+    });
+
+    banner_google.setAdSize(com.google.android.gms.ads.AdSize.BANNER);
+
+    banner_google.loadAd(new AdRequest.Builder().build());
+
+    layout_banner.addView(banner_google);
+}
+
+
+
+main_interstitial = new InterstitialAd(this);
+main_interstitial.setAdUnitId(getString(R.string.intersticial_id_google));
+main_interstitial.setAdListener(new com.google.android.gms.ads.AdListener(){
+    @Override
+    public void onAdClosed() {
+        main_interstitial.loadAd(new AdRequest.Builder().build());
+    }
+
+    @Override
+    public void onAdFailedToLoad(int i) {
+        main_interstitial.loadAd(new AdRequest.Builder().build());
+    }
+});
+
+        main_interstitial.loadAd(new AdRequest.Builder().build());
 
     }
 
@@ -131,26 +238,23 @@ ChangeTitle(0);
     private void SetupActionBar() {
 
 
-
-
         DrawerLayout drawerLayout = findViewById(R.id.drawer);
 
 
-
-toolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorAccent));
 
         setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,  R.string.opendrawer, R.string.closedrawer);
-navigationView = findViewById(R.id.navi);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.opendrawer, R.string.closedrawer);
+        navigationView = findViewById(R.id.navi);
 
-navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
 
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
     }
 
-    private void SetupTransitions(){
+    private void SetupTransitions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
             getWindow().setExitTransition(new ChangeImageTransform());
@@ -160,11 +264,11 @@ navigationView.setNavigationItemSelectedListener(this);
 
 
     // ====================================================================== Cambiar titulo de toolbar ==================================================================== //
-   // ====================================================================================================================================================================== //
+    // ====================================================================================================================================================================== //
 
     private void ChangeTitle(int position) {
 
-        switch (position){
+        switch (position) {
             case 0:
                 getSupportActionBar().setTitle(R.string.title1vipager);
                 break;
@@ -180,9 +284,9 @@ navigationView.setNavigationItemSelectedListener(this);
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.shareapp:
-                Log.e("MAIN", "onNavigationItemSelected: "+item.getTitle());
+                Log.e("MAIN", "onNavigationItemSelected: " + item.getTitle());
                 break;
 
         }
@@ -191,7 +295,7 @@ navigationView.setNavigationItemSelectedListener(this);
         return false;
     }
 
-    void Showtutorial(){
+    void Showtutorial() {
         relativeLayoutTutorial.setVisibility(View.VISIBLE);
 
         content.setText(R.string.tuto1);
@@ -199,36 +303,106 @@ navigationView.setNavigationItemSelectedListener(this);
     }
 
 
-    public void Next(View view){
-switch (valuest){
-    case 2:
-        content.setText(R.string.tuto2);
-        tuto_1.setVisibility(View.VISIBLE);
-        success.start();
-        break;
-    case 3:
-        content.setText(R.string.tuto3);
-        tuto_1.setVisibility(View.GONE);
-        tuto_2.setVisibility(View.VISIBLE);
-        success.start();
-        break;
-    case 4:
-        content.setText(R.string.tuto4);
-        tuto_2.setVisibility(View.GONE);
-        fireworks_gif.setVisibility(View.VISIBLE);
-        congrats.start();
-        break;
-    case 5:
-        relativeLayoutTutorial.setVisibility(View.GONE);
-        valuest = 0;
-        SharedPreferences.Editor editor = preferences.edit();
+    public void Next(View view) {
+        switch (valuest) {
+            case 2:
+                content.setText(R.string.tuto2);
+                tuto_1.setVisibility(View.VISIBLE);
+                success.start();
+                break;
+            case 3:
+                content.setText(R.string.tuto3);
+                tuto_1.setVisibility(View.GONE);
+                tuto_2.setVisibility(View.VISIBLE);
+                success.start();
+                break;
+            case 4:
+                content.setText(R.string.tuto4);
+                tuto_2.setVisibility(View.GONE);
+                fireworks_gif.setVisibility(View.VISIBLE);
+                congrats.start();
+                break;
+            case 5:
+                relativeLayoutTutorial.setVisibility(View.GONE);
+                valuest = 0;
+                SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putInt(key_tt, 1);
-        editor.commit();
-        break;
-}
+                editor.putInt(key_tt, 1);
+                editor.commit();
+                break;
+        }
 
-valuest++;
+        valuest++;
     }
+
+
+    private void ShowDialog() {
+
+
+        if (preferences.getBoolean(keyToBoleaan, true)) {
+
+            if (preferences.getInt(keytoint, 1) >= Constant.Pop_up_frecuency) {
+                final SharedPreferences.Editor edit = preferences.edit();
+
+                // =============== MOSTRAR AL FIN ==================== //
+
+                final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+
+                alertDialog.setTitle(getString(R.string.rate_title));
+                alertDialog.setMessage(getString(R.string.rate_message));
+                alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL, getString(R.string.not_now_button), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.never_button), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertDialog.dismiss();
+
+                        edit.putBoolean(keyToBoleaan, false);
+                        edit.commit();
+                    }
+                });
+
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.rate_now), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_google_play) + getPackageName()));
+
+
+                        startActivity(intent);
+                        alertDialog.dismiss();
+                        edit.putBoolean(keyToBoleaan, false);
+                        edit.commit();
+                    }
+                });
+
+                alertDialog.show();
+
+
+                // =================================================== //
+                edit.putInt(keytoint, 1);
+                edit.commit();
+            } else {
+                SharedPreferences.Editor edit = preferences.edit();
+
+                int loco = preferences.getInt(keytoint, 1);
+
+                loco++;
+
+                edit.putInt(keytoint, loco);
+                edit.commit();
+
+            }
+        }
+
+
+    }
+
+
 
 }

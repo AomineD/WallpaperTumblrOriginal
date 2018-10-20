@@ -38,6 +38,7 @@ public class WallpapersAutorFragment extends Fragment {
     private Button botonBack;
     private String url_m;
     private String name;
+    private int aki;
 
     public WallpapersAutorFragment() {
         // Required empty public constructor
@@ -52,6 +53,23 @@ public class WallpapersAutorFragment extends Fragment {
             @Override
             public void Correct(ArrayList<TumblrItem> response) {
                 tumblrItemArrayList.addAll(response);
+
+                aki = Constant.NATIVE_FRECUENCY;
+
+                for(int i=0; i < tumblrItemArrayList.size(); i++){
+                    if(aki - 1 == i && !tumblrItemArrayList.get(i).isAD()){
+
+                        TumblrItem itemAd = new TumblrItem();
+
+                        itemAd.setAD(true);
+
+
+                        tumblrItemArrayList.add(i, itemAd);
+
+                        aki += Constant.NATIVE_FRECUENCY;
+                    }
+                }
+
                 List_wallpaper.getAdapter().notifyDataSetChanged();
             }
 

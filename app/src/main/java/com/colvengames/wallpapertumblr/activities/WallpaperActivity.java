@@ -287,8 +287,19 @@ vipager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         if(vipager.getCurrentItem() == 0) {
             papager.setDefaultpost(position);
+            if(tumblrItemArrayList.get(position).isAD()){
+                actionButton.setVisibility(View.GONE);
+            }else{
+                actionButton.setVisibility(View.VISIBLE);
+            }
         }else{
             papager.setDefaultpost(position + 1);
+
+            if(tumblrItemArrayList.get(position).isAD()){
+                actionButton.setVisibility(View.GONE);
+            }else{
+                actionButton.setVisibility(View.VISIBLE);
+            }
         }
 
 
@@ -300,7 +311,7 @@ vipager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 
 if(right_gif.getAnimation() == null || right_gif.getAnimation() != right && !boleana) {
-    Log.e("MAIN", "onPageScrolled: ANIMANDO" );
+  //  Log.e("MAIN", "onPageScrolled: ANIMANDO" );
     right_gif.setAnimation(right);
 
     left_gif.setAnimation(left);
@@ -377,7 +388,7 @@ if(vipager.getCurrentItem() == 0) {
                         Animation left = AnimationUtils.loadAnimation(WallpaperActivity.this, R.anim.zoomin);
 
                         if (right_gif.getAnimation() == null || right_gif.getAnimation() != right && boleana) {
-                            Log.e("MAIN", "onPageScrolled: ANIMANDO" );
+                            //Log.e("MAIN", "onPageScrolled: ANIMANDO" );
                             right_gif.startAnimation(right);
 
                             left_gif.startAnimation(left);
@@ -585,44 +596,42 @@ return true;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (!tumblrItemArrayList.get(vipager.getCurrentItem()).isAD()) {
+            switch (item.getItemId()) {
+                case R.id.download:
+                    DownloadFileMethod();
+                    break;
+                case R.id.favorite:
+                    if (favorites) {
 
-        switch (item.getItemId()){
-            case R.id.download:
-DownloadFileMethod();
-                break;
-            case R.id.favorite:
-if(favorites){
-
-FavoritesItem fav = FavoritesItem.findById(FavoritesItem.class, id);
-fav.delete();
-favorites = false;
-item.setIcon(R.drawable.favorite_btn);
-
-
+                        FavoritesItem fav = FavoritesItem.findById(FavoritesItem.class, id);
+                        fav.delete();
+                        favorites = false;
+                        item.setIcon(R.drawable.favorite_btn);
 
 
 //fav_animation.setAnimation();
 
 
+                    } else {
+                        item.setIcon(R.drawable.favorite_btn_on);
+                        favorites = true;
+                        FavoritesItem fav = new FavoritesItem();
+                        fav.setUrl(url);
+                        fav.setName(name_wall);
+                        fav.save();
+                        id = fav.getId();
+                        fav_animation.setVisibility(View.VISIBLE);
+                        Noactive();
+                    }
+                    break;
 
 
-}else{
-    item.setIcon(R.drawable.favorite_btn_on);
-    favorites = true;
-    FavoritesItem fav = new FavoritesItem();
-    fav.setUrl(url);
-    fav.setName(name_wall);
-    fav.save();
-    id = fav.getId();
-    fav_animation.setVisibility(View.VISIBLE);
-    Noactive();
-}
-                break;
+            }
+
 
 
         }
-
-
         return true;
     }
 

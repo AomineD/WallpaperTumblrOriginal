@@ -64,6 +64,10 @@
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.colvengames.wallpapertumblr.config.FavoritesItem" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/app_id_google"/>
     </application>
 
 </manifest>

@@ -39,13 +39,25 @@ public class PagerView extends FragmentStatePagerAdapter {
 
 
     //    Log.e("MAIN", "getItem: defaultposition = "+defaultpost + " position = "+position);
+
 if(position == 0) {
     arguments.putString(WallpaperActivity.key_wall, String.valueOf(ArrayTumblr.get(defaultpost).getUrl_image()));
+    if(ArrayTumblr.get(defaultpost).isAD()){
+        arguments.putBoolean(WallpaperActivity.key_type, true);
+    }
 }else if(defaultpost != position){
     arguments.putString(WallpaperActivity.key_wall, String.valueOf(ArrayTumblr.get(position).getUrl_image()));
+    if(ArrayTumblr.get(position).isAD()){
+        arguments.putBoolean(WallpaperActivity.key_type, true);
+    }
 }else{
     arguments.putString(WallpaperActivity.key_wall, String.valueOf(ArrayTumblr.get(defaultpost).getUrl_image()));
+    if(ArrayTumblr.get(defaultpost).isAD()){
+        arguments.putBoolean(WallpaperActivity.key_type, true);
+    }
 }
+
+
 
         viewWallpaper.setArguments(arguments);
 

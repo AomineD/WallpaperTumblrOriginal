@@ -3,15 +3,30 @@ package com.colvengames.wallpapertumblr.models;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 public class TumblrItem implements Parcelable {
 
     private String url_image;
 
+    public boolean isAD() {
+        return IsAD;
+    }
+
+    public void setAD(boolean AD) {
+        IsAD = AD;
+    }
+
+    private boolean IsAD;
+
     protected TumblrItem(Parcel in) {
         name = in.readString();
         autor = in.readString();
         url_image = in.readString();
+        boolean[] booleans = new boolean[1];
+        in.readBooleanArray(booleans);
+        setAD(booleans[0]);
+
     }
 
     public TumblrItem(){
@@ -31,8 +46,15 @@ public class TumblrItem implements Parcelable {
     };
 
     public Uri getUrl_image() {
-        return Uri.parse(url_image);
+     //   Log.e("MAIN", "getUrl_image: "+url_image);
+        if(url_image != null)
+            return Uri.parse(url_image);
+   else{
+       return null;
+        }
+
     }
+
 
     public void setUrl_image(String url_image) {
         this.url_image = url_image;
@@ -68,5 +90,6 @@ public class TumblrItem implements Parcelable {
 dest.writeString(this.name);
 dest.writeString(this.autor);
 dest.writeString(this.url_image);
+dest.writeBooleanArray(new boolean[]{this.isAD()});
     }
 }
