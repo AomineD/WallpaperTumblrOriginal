@@ -26,19 +26,16 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="com.android.camera.action.CROP" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
-
         </activity>
-
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -47,9 +44,9 @@
         <activity android:name=".activities.WallpaperActivity">
             <intent-filter>
                 <action android:name="com.android.camera.action.CROP" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
 
         <meta-data
@@ -64,10 +61,11 @@
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="com.colvengames.wallpapertumblr.config.FavoritesItem" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/app_id_google"/>
+            android:value="@string/app_id_google" />
+
+        <activity android:name=".activities.WebActivity"></activity>
     </application>
 
 </manifest>

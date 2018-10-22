@@ -64,6 +64,8 @@
         app:itemTextColor="@color/itemnav"
         android:background="@color/colorDark"
         app:menu="@menu/menu_navi"
+        app:itemIconTint="@color/white"
+        app:headerLayout="@layout/layout_header"
         android:layout_gravity="start"
         >
 

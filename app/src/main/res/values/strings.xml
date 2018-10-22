@@ -47,5 +47,9 @@
     <string name="not_now_button">Not now</string>
     <string name="url_google_play">https://play.google.com/store/apps/details?id=</string>
     <string name="rate_now">Rate now</string>
+    <string name="policyprivacy">Policy Privacy</string>
+    <string name="conditions">Conditions</string>
+    <string name="url_policy">http://besosdeamor.info/admin_panel_radio_full/privacy_policy.php</string>
+    <string name="url_conditions">http://besosdeamor.info/admin_panel_radio_full/privacy_policy.php</string>
 
 </resources>

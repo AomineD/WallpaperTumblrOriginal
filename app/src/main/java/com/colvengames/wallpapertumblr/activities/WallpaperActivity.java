@@ -82,6 +82,7 @@ public class WallpaperActivity extends AppCompatActivity implements DownloadArch
     private List<FavoritesItem> favoritesItems;
     private ArrayList<TumblrItem> tumblrItemArrayList;
     private PagerView papager;
+    private Menu main_men;
 
     // ====================== VIEWS ======================= //
 
@@ -207,31 +208,6 @@ startActivity(intent);
     }
 
 
-
-    public static Uri getImageContentUri(Context context, File imageFile) {
-        String filePath = imageFile.getAbsolutePath();
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Images.Media._ID},
-                MediaStore.Images.Media.DATA + "=? ",
-                new String[]{filePath}, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int id = cursor.getInt(cursor
-                    .getColumnIndex(MediaStore.MediaColumns._ID));
-            Uri baseUri = Uri.parse("content://media/external/images/media");
-            return Uri.withAppendedPath(baseUri, "" + id);
-        } else {
-            if (imageFile.exists()) {
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DATA, filePath);
-                return context.getContentResolver().insert(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            } else {
-                return null;
-            }
-        }
-    }
 // =============================================== //
 
     @Override
@@ -276,6 +252,10 @@ SetupViewPager();
 
     }
 
+
+ // ======================================================================== ViewPager Configuration ========================================================================= //
+ // ========================================================================================================================================================================== //
+
     private void SetupViewPager() {
         boleana = false;
          papager = new PagerView(getSupportFragmentManager(), tumblrItemArrayList);
@@ -305,6 +285,8 @@ vipager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
         Uri newUri = tumblrItemArrayList.get(position).getUrl_image();
         Picasso.get().load(newUri).fit().into(phototo);
+url = String.valueOf(tumblrItemArrayList.get(position).getUrl_image());
+CheckFav();
 
         Animation right = AnimationUtils.loadAnimation(WallpaperActivity.this, R.anim.zoomout);
         Animation left = AnimationUtils.loadAnimation(WallpaperActivity.this, R.anim.zoomout);
@@ -339,6 +321,8 @@ if(right_gif.getAnimation() == null || right_gif.getAnimation() != right && !bol
     public void onPageScrollStateChanged(int state) {
 
         if(state == 2) {
+
+            Log.e("MAIN", "onPageScrollStateChanged: "+main_men.getItem(0).getTitle());
 
             new Timer().schedule(new TimerTask() {
                 @Override
@@ -402,6 +386,8 @@ if(vipager.getCurrentItem() == 0) {
 
 
     }
+
+
 
     // ======================================================================================================================== //
     // ================================================ SETUP DE LOS BOTONES ================================================== //
@@ -486,6 +472,10 @@ relativeLayoutok.setOnClickListener(new View.OnClickListener() {
 
     }
 
+    // ============================================================================================================================================ //
+    // ===================================================== OCULTAR BOTONES   ==================================================================== //
+    // ============================================================================================================================================ //
+
     private void Gonebuttons(){
         Animation animation_size = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoomout);
 
@@ -522,6 +512,10 @@ relativeLayoutok.setOnClickListener(new View.OnClickListener() {
             }
         }, 2500);
     }
+
+    // ========================================================================================================================================================= //
+    // ========================================================== INICIAR FRAGMENT PARA SETEAR WALLPAPER ======================================================= //
+    // ========================================================================================================================================================= //
 
     private void GoOn(Uri uri){
 
@@ -589,10 +583,41 @@ menu.getItem(0).setIcon(R.drawable.favorite_btn_on);
             Log.e("MAIN", "Error SQLite: "+e.getMessage());
         }
 
+        main_men = menu;
 
 return true;
 
     }
+
+    // ====================================================== CHEQUEAR FAVORITOS ============================================================ //
+
+    private void CheckFav(){
+        if(main_men != null) {
+            main_men.getItem(0).setIcon(R.drawable.favorite_btn);
+            favorites = false;
+            try {
+                favoritesItems = FavoritesItem.listAll(FavoritesItem.class);
+                //Log.e("MAIN", "onCreateOptionsMenu: SIZE "+menu.size() );
+                for (int i = 0; i < favoritesItems.size(); i++) {
+                    if (favoritesItems.get(i).getUrl().equals(url)) {
+                        favorites = true;
+                        id = favoritesItems.get(i).getId();
+                        main_men.getItem(0).setIcon(R.drawable.favorite_btn_on);
+                        favorites = true;
+                        //     Log.e("MAIN", "onCreateOptionsMenu: INTO "+favoritesItems.get(i).getUrl());
+                        break;
+                    }
+                    //   Log.e("MAIN", "onCreateOptionsMenu: OUT "+favoritesItems.get(i).getUrl());
+
+                }
+
+            } catch (SQLiteException e) {
+                Log.e("MAIN", "Error SQLite: " + e.getMessage());
+            }
+        }
+    }
+
+    // =============================================== DEFAULT METHODS ==================================================== //
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -617,6 +642,7 @@ return true;
                         item.setIcon(R.drawable.favorite_btn_on);
                         favorites = true;
                         FavoritesItem fav = new FavoritesItem();
+                        url = String.valueOf(tumblrItemArrayList.get(vipager.getCurrentItem()).getUrl_image());
                         fav.setUrl(url);
                         fav.setName(name_wall);
                         fav.save();

@@ -42,6 +42,7 @@ public class Home extends Fragment implements OnLoadMore {
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private int id = 0;
+
     private int last_id = 3;
 
     private int aki = 0;

@@ -69,6 +69,7 @@ public class WallpaperAdapter extends RecyclerView.Adapter<WallpaperAdapter.Hold
 
     private ArrayList<View> views = new ArrayList<>();
 
+    private int akino = 0;
     private InterstitialAd interstitialAd_google;
     private com.facebook.ads.InterstitialAd interstitialAd_facebook;
 
@@ -128,7 +129,7 @@ this.activity = mActivity;
                 public void onClick(View v) {
                     // ================================== INTERSTICIAL GOOGLE ================================================ //
 
-                        if (interstitialAd_google.isLoaded()) {
+                        if (interstitialAd_google.isLoaded() && akino == Constant.INTERSTICIAL_FRECUENCY) {
                             interstitialAd_google.setAdListener(new AdListener() {
                                 @Override
                                 public void onAdClosed() {
@@ -161,10 +162,10 @@ this.activity = mActivity;
 
                             });
 
-
+akino = 0;
                             interstitialAd_google.show();
                         } else {
-
+akino++;
                             Intent intent = new Intent(mContext, WallpaperActivity.class);
                             intent.putExtra(WallpaperActivity.key_wall, urlOfPhoto);
                             intent.putExtra(WallpaperActivity.key_name, tumblrItems.get(position).getName());

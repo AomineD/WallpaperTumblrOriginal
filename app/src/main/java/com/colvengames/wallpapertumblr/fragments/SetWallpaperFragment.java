@@ -102,6 +102,7 @@ Fragment = this;
 
         backgr = view.findViewById(R.id.back_setter);
         SetupButtons(view);
+        Log.e("MAIN", "onCreateView: DATA = "+data);
         Picasso.get().load(data).into(backgr);
         backgr.getDrawingCache();
 
@@ -278,7 +279,7 @@ activado = true;
     Log.e("MAIN", "ShareImage: url = " + iru.toString());
 
 
-    String texto = getString(R.string.look_share) + " " + getString(R.string.linkapp) + getActivity().getPackageName();
+    String texto = getString(R.string.look_share) + " " + getString(R.string.url_google_play) + getActivity().getPackageName();
 
     intent.putExtra("sms_body", texto);
     intent.putExtra(Intent.EXTRA_TEXT, texto);

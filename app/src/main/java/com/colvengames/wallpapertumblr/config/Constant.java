@@ -52,6 +52,7 @@ public static final int limite_por_pagina = 25;
 
 public static final int Pop_up_frecuency = 3;
 public static final int NATIVE_FRECUENCY = 4;
+public static final int INTERSTICIAL_FRECUENCY = 2;
 public static final int TYPE_ADS = 0;
 
 

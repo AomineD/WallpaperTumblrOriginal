@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 
+import com.colvengames.wallpapertumblr.activities.WebActivity;
 import com.colvengames.wallpapertumblr.config.Constant;
 import com.colvengames.wallpapertumblr.config.PagerAdapter;
 import com.facebook.ads.Ad;
@@ -286,7 +287,41 @@ main_interstitial.setAdListener(new com.google.android.gms.ads.AdListener(){
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.shareapp:
-                Log.e("MAIN", "onNavigationItemSelected: " + item.getTitle());
+                Intent intentShare = new Intent(Intent.ACTION_SEND);
+
+
+                intentShare.putExtra(Intent.EXTRA_TEXT, "Download WallpaperTumblr to have the best and beatiful wallpapers here: "+getString(R.string.url_google_play)+getPackageName());
+intentShare.setType("text/plain");
+                startActivity(Intent.createChooser(intentShare, "Choose one..."));
+
+                break;
+            case R.id.rateapp:
+Intent rate = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_google_play)+getPackageName()));
+
+startActivity(rate);
+                break;
+            case R.id.policy:
+                Intent intent = new Intent(this, WebActivity.class);
+
+                Bundle extras = new Bundle();
+
+                extras.putString(WebActivity.key_ur, getString(R.string.url_policy));
+
+                intent.putExtras(extras);
+
+                startActivity(intent);
+                break;
+            case R.id.conditions:
+                Intent intent_conditions = new Intent(this, WebActivity.class);
+
+                Bundle extras_2 = new Bundle();
+
+                extras_2.putString(WebActivity.key_ur, getString(R.string.url_conditions));
+
+                intent_conditions.putExtras(extras_2);
+
+                startActivity(intent_conditions);
+
                 break;
 
         }
