@@ -15,4 +15,5 @@
 
     <color name="yellow">#ffeb0f</color>
     <color name="light_blue">#3bf7f1</color>
+    <color name="splash_background">#ffeb0f</color>
 </resources>

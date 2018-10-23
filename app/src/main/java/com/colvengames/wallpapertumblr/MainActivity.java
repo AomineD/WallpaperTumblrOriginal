@@ -331,10 +331,13 @@ startActivity(rate);
     }
 
     void Showtutorial() {
-        relativeLayoutTutorial.setVisibility(View.VISIBLE);
+       // relativeLayoutTutorial.setVisibility(View.VISIBLE);
 
-        content.setText(R.string.tuto1);
-        valuest = 2;
+       // content.setText(R.string.tuto1);
+        //valuest = 2;
+
+
+
     }
 
 

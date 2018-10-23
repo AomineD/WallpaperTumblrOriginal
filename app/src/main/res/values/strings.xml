@@ -52,4 +52,17 @@
     <string name="url_policy">http://besosdeamor.info/admin_panel_radio_full/privacy_policy.php</string>
     <string name="url_conditions">http://besosdeamor.info/admin_panel_radio_full/privacy_policy.php</string>
 
+
+
+    <string name="intro1_title">Welcome to our app</string>
+    <string name="intro2_title">Title 2</string>
+    <string name="intro3_title">Title 3</string>
+    <string name="intro4_title">Title 4</string>
+
+
+    <string name="intro1_desc">Desc 1</string>
+    <string name="intro2_desc">Desc 2</string>
+    <string name="intro3_desc">Desc 3</string>
+    <string name="intro4_desc">Desc 4</string>
+
 </resources>
